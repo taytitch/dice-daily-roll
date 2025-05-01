@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>สุ่มเลข 1-6 วันละครั้ง</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    #result {
+      font-size: 48px;
+      margin: 20px;
+    }
+    #message {
+      color: red;
+      margin-top: 10px;
+    }
+    button {
+      font-size: 24px;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>สุ่มเลข 1–6 (วันละครั้ง)</h1>
+  <div id="result">—</div>
+  <button id="rollBtn">สุ่มเลย</button>
+  <div id="message"></div>
+
+  <script>
+    const rollBtn = document.getElementById('rollBtn');
+    const resultDiv = document.getElementById('result');
+    const messageDiv = document.getElementById('message');
+
+    function getTodayKey() {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      return `roll_${yyyy}${mm}${dd}`;
+    }
+
+    function getMidnightTimestamp() {
+      const now = new Date();
+      const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      return midnight.getTime();
+    }
+
+    function canRoll() {
+      const key = getTodayKey();
+      return localStorage.getItem(key) === null;
+    }
+
+    function rollDice() {
+      return Math.floor(Math.random() * 6) + 1;
+    }
+
+    function saveRoll(value) {
+      const key = getTodayKey();
+      localStorage.setItem(key, value);
+    }
+
+    function showResult(value) {
+      resultDiv.textContent = value;
+    }
+
+    function showMessage(msg) {
+      messageDiv.textContent = msg;
+    }
+
+    function init() {
+      const key = getTodayKey();
+      const storedValue = localStorage.getItem(key);
+      if (storedValue !== null) {
+        showResult(storedValue);
+        showMessage("คุณได้สุ่มแล้ววันนี้ ลองใหม่พรุ่งนี้นะครับ");
+        rollBtn.disabled = true;
+      }
+    }
+
+    rollBtn.addEventListener('click', () => {
+      if (canRoll()) {
+        const value = rollDice();
+        saveRoll(value);
+        showResult(value);
+        showMessage("คุณได้สุ่มแล้ววันนี้ ลองใหม่พรุ่งนี้นะครับ");
+        rollBtn.disabled = true;
+      } else {
+        showMessage("คุณได้สุ่มแล้ววันนี้ ลองใหม่พรุ่งนี้นะครับ");
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>
